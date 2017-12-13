@@ -1,18 +1,21 @@
 FROM centos:centos7
 
 RUN yum -y update && yum -y install curl wget unzip git vim \
-supervisor iproute hostname inotify-tools yum-utils which \
+iproute hostname inotify-tools yum-utils which \
 epel-release openssh-server openssh-clients
 
 # Set root password
 RUN echo root:docker | chpasswd && yum install -y passwd
-RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN ssh-keygen -b 1024 -t rsa -f /etc/ssh/ssh_host_key \
+&& ssh-keygen -b 1024 -t rsa -f /etc/ssh/ssh_host_rsa_key \
+&& ssh-keygen -b 1024 -t dsa -f /etc/ssh/ssh_host_dsa_key \
+&& sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config \
+&& sed -ri 's/#UsePAM no/UsePAM no/g' /etc/ssh/sshd_config \
+&& sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
 
-# SSH login fix. Otherwise user is kicked off after login
-RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
 
-# Install Apache 
-RUN yum -y install httpd mod_ssl
+# Install Epel packages and Apache 
+RUN yum -y install htop supervisor httpd mod_ssl
 
 # Reconfigure Apache
 RUN sed -i 's/AllowOverride None/AllowOverride All/g' /etc/httpd/conf/httpd.conf \
@@ -41,4 +44,4 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Ports
 EXPOSE 22 25 80 443 3306
-CMD ["/bin/supervisord"]
+CMD ["/usr/bin/supervisord"]
