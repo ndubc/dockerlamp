@@ -40,8 +40,9 @@ RUN ln -sf /usr/share/zoneinfo/EST /etc/localtime \
 	&& echo "NETWORKING=yes" > /etc/sysconfig/network
 
 #Copy SupervisorD conf
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+#COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Ports
 EXPOSE 22 25 80 443 3306
-CMD ["/usr/bin/supervisord"]
+#CMD ["/usr/bin/supervisord"]
+CMD ["/usr/sbin/httpd", "-D", "FOREGROUND"]
