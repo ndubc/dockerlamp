@@ -45,4 +45,8 @@ RUN ln -sf /usr/share/zoneinfo/EST /etc/localtime \
 # Ports
 EXPOSE 22 25 80 443 3306
 #CMD ["/usr/bin/supervisord"]
-CMD ["/usr/sbin/httpd", "-D", "FOREGROUND"]
+#CMD ["/usr/sbin/httpd", "-D", "FOREGROUND"]
+
+# Start the service
+CMD ["-D", "FOREGROUND"]
+ENTRYPOINT ["/usr/sbin/httpd"]
