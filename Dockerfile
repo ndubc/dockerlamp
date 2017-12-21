@@ -33,7 +33,7 @@ RUN yum -y install php php-devel php-gd php-pdo php-soap php-xmlrpc php-xml php-
 RUN yum -y install mariadb-devel mariadb-libs mariadb mariadb-server
 
 # Clean up yum
-RUN rm -rf /var/cache/yum/* && yum clean all
+#RUN rm -rf /var/cache/yum/* && yum clean all
 
 # EST Timezone & Networking
 RUN ln -sf /usr/share/zoneinfo/EST /etc/localtime \
